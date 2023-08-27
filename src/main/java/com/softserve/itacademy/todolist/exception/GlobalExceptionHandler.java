@@ -45,5 +45,13 @@ public class GlobalExceptionHandler { // consider extending ResponseEntityExcept
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<Object> handleUserNameAlreadyExist(UserNameAlreadyExistException ex) {
+        log.info(ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
+        return ResponseEntity.badRequest().body(errors);
+    }
+
     // todo: add more handlers
 }

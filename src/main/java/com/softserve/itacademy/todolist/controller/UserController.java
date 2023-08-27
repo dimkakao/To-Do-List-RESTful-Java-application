@@ -3,19 +3,17 @@ package com.softserve.itacademy.todolist.controller;
 import com.softserve.itacademy.todolist.dto.UserDto;
 import com.softserve.itacademy.todolist.dto.UserResponse;
 import com.softserve.itacademy.todolist.dto.UserTransformer;
+import com.softserve.itacademy.todolist.exception.UserNameAlreadyExistException;
 import com.softserve.itacademy.todolist.model.User;
-import com.softserve.itacademy.todolist.service.RoleService;
 import com.softserve.itacademy.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/users")
@@ -46,6 +44,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> createNewUser (@Valid @RequestBody UserDto userDto) {
+        UserDetails existingUser = userService.loadUserByUsername(userDto.getEmail());
+        if (existingUser != null) throw new UserNameAlreadyExistException("User with email " + userDto.getEmail() + " already exist.");
+
         User user = userService.create(userTransformer.convertUserDtoToUser(userDto, null));
         UserResponse userResponse = new UserResponse(user);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
