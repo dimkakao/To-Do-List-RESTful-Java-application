@@ -32,10 +32,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User role) {
-        if (role != null) {
-            readById(role.getId());
-            return userRepository.save(role);
+    public User update(User user) {
+        if (user != null) {
+            readById(user.getId());
+            return userRepository.save(user);
         }
         throw new NullEntityReferenceException("User cannot be 'null'");
     }
@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id) {
         User user = readById(id);
+        if (user == null) throw new EntityNotFoundException("User with id " + id + " not found");
         userRepository.delete(user);
     }
 
