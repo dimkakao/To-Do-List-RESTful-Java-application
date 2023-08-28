@@ -5,7 +5,6 @@ import com.softserve.itacademy.todolist.model.User;
 import com.softserve.itacademy.todolist.repository.UserRepository;
 import com.softserve.itacademy.todolist.service.UserService;
 import com.softserve.itacademy.todolist.util.EntityNotFoundMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
