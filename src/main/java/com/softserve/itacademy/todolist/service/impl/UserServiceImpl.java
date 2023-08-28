@@ -4,6 +4,7 @@ import com.softserve.itacademy.todolist.exception.NullEntityReferenceException;
 import com.softserve.itacademy.todolist.model.User;
 import com.softserve.itacademy.todolist.repository.UserRepository;
 import com.softserve.itacademy.todolist.service.UserService;
+import com.softserve.itacademy.todolist.util.EntityNotFoundMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,8 +15,12 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
+
+    private final  UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User create(User user) {
@@ -28,7 +33,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User readById(long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("User with id " + id + " not found"));
+                () -> new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("User", id)));
     }
 
     @Override
@@ -43,13 +48,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id) {
         User user = readById(id);
-        if (user == null) throw new EntityNotFoundException("User with id " + id + " not found");
+        if (user == null) throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("User", id));
         userRepository.delete(user);
     }
 
     @Override
     public List<User> getAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not Found!");
+        }
+        return user;
     }
 
     @Override

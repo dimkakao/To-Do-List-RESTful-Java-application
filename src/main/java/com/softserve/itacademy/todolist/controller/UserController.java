@@ -3,7 +3,7 @@ package com.softserve.itacademy.todolist.controller;
 import com.softserve.itacademy.todolist.dto.UserDto;
 import com.softserve.itacademy.todolist.dto.UserResponse;
 import com.softserve.itacademy.todolist.dto.UserTransformer;
-import com.softserve.itacademy.todolist.exception.UserNameAlreadyExistException;
+import com.softserve.itacademy.todolist.exception.EntityAlreadyExistException;
 import com.softserve.itacademy.todolist.model.User;
 import com.softserve.itacademy.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +29,7 @@ public class UserController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserResponse>> getAll() {
         List<UserResponse> users =  userService.getAll().stream()
                 .map(UserResponse::new)
@@ -37,15 +38,17 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         UserResponse userResponse =  new UserResponse(userService.readById(id));
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserResponse> createNewUser (@Valid @RequestBody UserDto userDto) {
         UserDetails existingUser = userService.loadUserByUsername(userDto.getEmail());
-        if (existingUser != null) throw new UserNameAlreadyExistException("User with email " + userDto.getEmail() + " already exist.");
+        if (existingUser != null) throw new EntityAlreadyExistException("User with email " + userDto.getEmail() + " already exist.");
 
         User user = userService.create(userTransformer.convertUserDtoToUser(userDto, null));
         UserResponse userResponse = new UserResponse(user);
@@ -53,6 +56,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponse> updateUser (@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
         User updatedUser = userService.readById(id);
         updatedUser = userTransformer.convertUserDtoToUser(userDto, updatedUser);
@@ -62,6 +66,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.delete(id);
         return new ResponseEntity<>("OK", HttpStatus.OK);

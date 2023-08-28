@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler { // consider extending ResponseEntityExceptionHandler
+public class GlobalExceptionHandler {
+
+    public static final String ERROR = "error";
 
     @ExceptionHandler
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler { // consider extending ResponseEntityExcept
     public ResponseEntity<Object> handleNullEntityReferenceException(NullEntityReferenceException ex) {
         log.info(ex.getMessage());
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put(ERROR, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
@@ -41,15 +41,15 @@ public class GlobalExceptionHandler { // consider extending ResponseEntityExcept
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
         log.info(ex.getMessage());
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put(ERROR, ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleUserNameAlreadyExist(UserNameAlreadyExistException ex) {
+    public ResponseEntity<Object> handleUserNameAlreadyExist(EntityAlreadyExistException ex) {
         log.info(ex.getMessage());
         Map<String, String> errors = new HashMap<>();
-        errors.put("error", ex.getMessage());
+        errors.put(ERROR, ex.getMessage());
         return ResponseEntity.badRequest().body(errors);
     }
 
