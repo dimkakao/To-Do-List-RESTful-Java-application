@@ -9,6 +9,7 @@ import com.softserve.itacademy.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,6 +35,7 @@ public class ToDoController {
 
     @GetMapping("/{userId}/todos")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityCheck.isLoggedUser(#userId)")
     public ResponseEntity<List<ToDoResponse>> getTodosByUser(@PathVariable Long userId) {
         User user = userService.readById(userId);
         if (user == null) throw new EntityNotFoundException();
@@ -45,6 +47,7 @@ public class ToDoController {
 
     @PostMapping("/{userId}/todos")
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityCheck.isLoggedUser(#userId)")
     public ResponseEntity<ToDoResponse> createTodoByUser(@PathVariable Long userId, @Valid @RequestBody ToDoDto newToDo) {
         User user = userService.readById(userId);
         Optional<ToDo> foundToDo = toDoService.getAll().stream()
@@ -62,6 +65,7 @@ public class ToDoController {
 
     @GetMapping("/{userId}/todos/{todoId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (@securityCheck.isLoggedUser(#userId) and @securityCheck.isOwner(#todoId))")
     public ResponseEntity<ToDoResponse> getUserTodoById(@PathVariable("userId") Long userId, @PathVariable("todoId") Long todoId) {
         ToDoResponse toDoResponse = new ToDoResponse(toDoService.readById(todoId));
         return new ResponseEntity<>(toDoResponse, HttpStatus.OK);
@@ -69,6 +73,7 @@ public class ToDoController {
 
     @PutMapping("/{userId}/todos/{todoId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (@securityCheck.isLoggedUser(#userId) and @securityCheck.isOwner(#todoId))")
     public ToDoResponse updateTodoByUser(@PathVariable Long userId, @PathVariable Long todoId, @Valid @RequestBody ToDoDto newToDo) {
         ToDo toDo = toDoService.readById(todoId);
         Optional<ToDo> foundToDo = toDoService.getAll().stream()
@@ -82,6 +87,7 @@ public class ToDoController {
 
     @DeleteMapping("/{userId}/todos/{todoId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (@securityCheck.isLoggedUser(#userId) and @securityCheck.isOwner(#todoId))")
     public ResponseEntity<String> deleteTodoByUser(@PathVariable Long userId, @PathVariable Long todoId) {
         ToDo toDo = toDoService.readById(todoId);
         if (toDo == null) throw new EntityNotFoundException("ToDo with " + todoId + " not found.");
@@ -90,6 +96,7 @@ public class ToDoController {
     }
 
     @GetMapping("/{userId}/todos/{todoId}/collaborators")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (@securityCheck.isLoggedUser(#userId) and @securityCheck.isOwner(#todoId))")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<UserResponse>> getTodoCollaborators(@PathVariable Long userId, @PathVariable Long todoId) {
         ToDo toDo = toDoService.readById(todoId);
@@ -101,6 +108,7 @@ public class ToDoController {
 
     @PostMapping("/{userId}/todos/{todoId}/collaborators")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (@securityCheck.isLoggedUser(#userId) and @securityCheck.isOwner(#todoId))")
     public ResponseEntity<String> postTodoCollaborators(@PathVariable Long userId, @PathVariable Long todoId, @RequestBody CollaboratorDto user) {
         User collaborator = userService.readById(user.getId());
         ToDo toDo = toDoService.readById(todoId);
@@ -112,6 +120,7 @@ public class ToDoController {
 
     @DeleteMapping("/{userId}/todos/{todoId}/collaborators")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (@securityCheck.isLoggedUser(#userId) and @securityCheck.isOwner(#todoId))")
     public ResponseEntity<String> deleteTodoCollaborators(@PathVariable Long userId, @PathVariable Long todoId, @RequestBody CollaboratorDto user) {
         User collaborator = userService.readById(user.getId());
         ToDo toDo = toDoService.readById(todoId);

@@ -1,6 +1,5 @@
 package com.softserve.itacademy.todolist.config;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,7 +39,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         }
         if (StringUtils.hasText(jwtToken) && jwtUtils.validateToken(jwtToken, userDetails)) {
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails.getUsername(), null, userDetails.getAuthorities());
+                    userDetails, null, userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }

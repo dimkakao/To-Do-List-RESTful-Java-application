@@ -2,15 +2,18 @@ package com.softserve.itacademy.todolist.dto;
 
 import com.softserve.itacademy.todolist.model.User;
 import com.softserve.itacademy.todolist.service.RoleService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserTransformer {
 
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserTransformer(RoleService roleService) {
+    public UserTransformer(RoleService roleService, PasswordEncoder passwordEncoder) {
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDto convertUserToUserDto(User user) {
@@ -30,7 +33,7 @@ public class UserTransformer {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(roleService.readById(userDto.getRoleId()));
         return user;
     }

@@ -9,6 +9,7 @@ import com.softserve.itacademy.todolist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class UserController {
     private final UserService userService;
     private final UserTransformer userTransformer;
 
+
     @Autowired
     public UserController(UserService userService, UserTransformer userTransformer) {
         this.userService = userService;
@@ -30,6 +32,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
         List<UserResponse> users =  userService.getAll().stream()
                 .map(UserResponse::new)
@@ -39,6 +42,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityCheck.isLoggedUser(#id)")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
         UserResponse userResponse =  new UserResponse(userService.readById(id));
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -57,6 +61,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityCheck.isLoggedUser(#id)")
     public ResponseEntity<UserResponse> updateUser (@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
         User updatedUser = userService.readById(id);
         updatedUser = userTransformer.convertUserDtoToUser(userDto, updatedUser);
@@ -66,6 +71,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.delete(id);
