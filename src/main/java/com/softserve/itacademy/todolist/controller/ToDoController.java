@@ -6,6 +6,7 @@ import com.softserve.itacademy.todolist.model.ToDo;
 import com.softserve.itacademy.todolist.model.User;
 import com.softserve.itacademy.todolist.service.ToDoService;
 import com.softserve.itacademy.todolist.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +21,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/users")
 public class ToDoController {
 
     private final UserService userService;
     private final ToDoService toDoService;
-
-    @Autowired
-    public ToDoController(UserService userService, ToDoService toDoService) {
-        this.userService = userService;
-        this.toDoService = toDoService;
-    }
-
 
     @GetMapping("/{userId}/todos")
     @ResponseStatus(HttpStatus.OK)

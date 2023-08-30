@@ -17,9 +17,7 @@ public class JwtUtils {
     private Long expiration;
 
     public String generateTokenFromUsername(String username) {
-        //Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
-                //.setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
