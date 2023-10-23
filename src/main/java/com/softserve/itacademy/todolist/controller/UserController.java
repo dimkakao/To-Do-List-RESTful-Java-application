@@ -30,7 +30,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<UserResponse>> getAll() {
-        List<UserResponse> users =  userService.getAll().stream()
+        List<UserResponse> users = userService.getAll().stream()
                 .map(UserResponse::new)
                 .toList();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -40,19 +40,20 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityCheck.isLoggedUser(#id)")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        UserResponse userResponse =  new UserResponse(userService.readById(id));
+        UserResponse userResponse = new UserResponse(userService.readById(id));
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<UserResponse> createNewUser (@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<UserResponse> createNewUser(@Valid @RequestBody UserDto userDto) {
         UserDetails existingUser = null;
         try {
-             existingUser = userService.loadUserByUsername(userDto.getEmail());
+            existingUser = userService.loadUserByUsername(userDto.getEmail());
         } catch (UsernameNotFoundException e) {
         }
-        if (existingUser != null) throw new EntityAlreadyExistException("User with email " + userDto.getEmail() + " already exist.");
+        if (existingUser != null)
+            throw new EntityAlreadyExistException("User with email " + userDto.getEmail() + " already exist.");
         User user = userService.create(userTransformer.convertUserDtoToUser(userDto, null));
         UserResponse userResponse = new UserResponse(user);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
@@ -61,7 +62,7 @@ public class UserController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @securityCheck.isLoggedUser(#id)")
-    public ResponseEntity<UserResponse> updateUser (@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
         User updatedUser = userService.readById(id);
         updatedUser = userTransformer.convertUserDtoToUser(userDto, updatedUser);
         User user = userService.update(updatedUser);

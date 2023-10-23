@@ -16,7 +16,6 @@ public class TaskServiceImpl implements TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceImpl.class);
 
-
     private final TaskRepository taskRepository;
 
     public TaskServiceImpl(TaskRepository taskRepository) {
@@ -33,12 +32,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task readById(long id) {
-
-        EntityNotFoundException exception = new EntityNotFoundException("Task with id " + id + " not found");
-        logger.error(exception.getMessage(), exception);
-
-        return taskRepository.findById(id).orElseThrow(
-                () -> exception);
+        return taskRepository.findById(id).orElseThrow(() -> {
+            EntityNotFoundException exception = new EntityNotFoundException("Task with id " + id + " not found");
+            logger.error(exception.getMessage(), exception);
+            return exception;
+        });
     }
 
     @Override
@@ -63,6 +61,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getByTodoId(long todoId) {
-        return taskRepository.getByTodoId(todoId);
+        return taskRepository.getByTodoId(todoId).orElseThrow(() -> {
+            EntityNotFoundException exception = new EntityNotFoundException("Todo with id " + todoId + " not found");
+            logger.error(exception.getMessage(), exception);
+            return exception;
+        });
     }
 }

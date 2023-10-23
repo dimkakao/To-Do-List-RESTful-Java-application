@@ -16,6 +16,7 @@ public class SecurityCheck {
 
     @Autowired
     private ToDoService toDoService;
+
     public boolean isOwner(long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean result = false;
@@ -47,5 +48,11 @@ public class SecurityCheck {
             result = userDetails.getId() == id;
         }
         return result;
+    }
+
+    public String isAdminOrIsLoggedOwnerOrCollaborator(long userId, long todoId) {
+        return "%s and %s or %s".formatted(isLoggedUser(userId), isOwner(todoId), isCollaborator(todoId));
+//                " (@securityCheck.isLoggedUser(#userId) and" +
+//                "(@securityCheck.isOwner(#todoId) or @securityCheck.isCollaborator(#todoId)))"
     }
 }

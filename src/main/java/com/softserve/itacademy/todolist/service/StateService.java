@@ -10,6 +10,5 @@ public interface StateService {
     State update(State state);
     void delete(long id);
     List<State> getAll();
-
     State getByName(String name);
 }
