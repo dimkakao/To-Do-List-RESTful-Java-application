@@ -19,8 +19,7 @@ public class ToDoServiceImpl implements ToDoService {
     private final ToDoRepository todoRepository;
     private final UserRepository userRepository;
 
-    public ToDoServiceImpl(ToDoRepository todoRepository,
-                           UserRepository userRepository) {
+    public ToDoServiceImpl(ToDoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
     }
@@ -35,21 +34,24 @@ public class ToDoServiceImpl implements ToDoService {
 
     @Override
     public ToDo readById(long id) {
-        return todoRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", id)));
+        return todoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", id)));
     }
+
     @Override
     public ToDo update(ToDo todo) {
         if (todo == null) throw new NullEntityReferenceException("ToDo cannot be 'null'");
         ToDo findedToDo = readById(todo.getId());
-        if (findedToDo == null) throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", todo.getId()));
+        if (findedToDo == null)
+            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", todo.getId()));
         return todoRepository.save(todo);
     }
 
     @Override
     public void delete(long id) {
         ToDo todo = readById(id);
-        if (todo == null) throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", id));
+        if (todo == null) {
+            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", id));
+        }
         todoRepository.delete(todo);
     }
 
@@ -61,7 +63,18 @@ public class ToDoServiceImpl implements ToDoService {
     @Override
     public List<ToDo> getByUserId(long userId) {
         Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("User", userId));
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("User", userId));
+        }
         return todoRepository.getByUserId(userId);
+    }
+
+    @Override
+    public ToDo getTodoByIdAndUserId(long todoId, long userId) {
+        List<ToDo> todos =  todoRepository.getByUserId(userId);
+        return todos.stream()
+                .filter(e -> e.getId().equals(todoId) && e.getOwner().getId() == userId)
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Todo", todoId)));
     }
 }

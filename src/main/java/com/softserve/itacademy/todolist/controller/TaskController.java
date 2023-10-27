@@ -11,7 +11,6 @@ import com.softserve.itacademy.todolist.service.ToDoService;
 import com.softserve.itacademy.todolist.util.EntityNotFoundMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +35,9 @@ public class TaskController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN') or" +
-//            " (@securityCheck.isLoggedUser(#userId) and" +
-//            "(@securityCheck.isOwner(#todoId) or @securityCheck.isCollaborator(#todoId)))")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isAdminOrIsLoggedOwnerOrCollaborator(#userId, #todoId)")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isLoggedOwnerOrCollaborator(#userId, #todoId)")
     public List<TaskResponse> getTodoTasks(@PathVariable Long userId, @PathVariable Long todoId) {
         ToDo toDo = toDoService.readById(todoId);
-        if (toDo == null ) {
-            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", todoId));
-        }
         return toDo.getTasks().stream()
                 .map(TaskResponse::new)
                 .toList();
@@ -52,7 +45,7 @@ public class TaskController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isAdminOrIsLoggedOwnerOrCollaborator(#userId, #todoId)")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isLoggedOwnerOrCollaborator(#userId, #todoId)")
     public TaskResponse createTodoTask(@PathVariable Long userId, @PathVariable Long todoId, @Valid @RequestBody TaskRequest newTask) {
         Task task = new Task();
         task.setName(newTask.getName());
@@ -64,31 +57,20 @@ public class TaskController {
 
     @GetMapping("/{taskId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isAdminOrIsLoggedOwnerOrCollaborator(#userId, #todoId)")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isLoggedOwnerOrCollaborator(#userId, #todoId)")
     public TaskResponse getTodoTask(@PathVariable Long userId, @PathVariable Long todoId, @PathVariable Long taskId) {
         Task task = taskService.readById(taskId);
-//        if (toDoService.readById(todoId) == null) {
-//            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
-//            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", todoId));
-//        }
-//        if (task == null) {
-//            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Task", taskId));
-//        }
+        ensureTodoContainsTask(task, todoId);
         log.info("Task was received correctly");
         return new TaskResponse(task);
     }
 
     @PutMapping("/{taskId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isAdminOrIsLoggedOwnerOrCollaborator(#userId, #todoId)")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or " + "@securityCheck.isLoggedOwnerOrCollaborator(#userId, #todoId)")
     public TaskResponse updateTodoTask(@PathVariable Long userId, @PathVariable Long todoId, @PathVariable Long taskId, @Valid @RequestBody TaskRequest newTask) {
         Task task = taskService.readById(taskId);
-//        if (toDoService.readById(todoId) == null) {
-//            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", todoId));
-//        }
-//        if (task == null) {
-//            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Task", taskId));
-//        }
+        ensureTodoContainsTask(task, todoId);
         task.setName(newTask.getName());
         task.setPriority(Priority.valueOf(newTask.getPriority().toUpperCase()));
         task.setState(stateService.readById(newTask.getStateId()));
@@ -98,18 +80,17 @@ public class TaskController {
 
     @DeleteMapping("/{taskId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or" +
-            " (@securityCheck.isLoggedUser(#userId) and" +
-            "(@securityCheck.isOwner(#todoId)))")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or" + " (@securityCheck.isLoggedUser(#userId) and" + "(@securityCheck.isOwner(#todoId)))")
     public String deleteTodoTask(@PathVariable Long userId, @PathVariable Long todoId, @PathVariable Long taskId) {
-        Task oldTask = taskService.readById(taskId);
-//        if (toDoService.readById(todoId) == null) {
-//            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("ToDo", todoId));
-//        }
-//        if (oldTask == null) {
-//            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Task", taskId));
-//        }
+        ensureTodoContainsTask(taskService.readById(taskId), todoId);
         taskService.delete(taskId);
         return "OK";
+    }
+
+    private void ensureTodoContainsTask(Task task, long todoId) {
+        ToDo toDo = toDoService.readById(todoId);
+        if (!toDo.getTasks().contains(task)) {
+            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Task", task.getId()) + " in Todo " + todoId );
+        }
     }
 }

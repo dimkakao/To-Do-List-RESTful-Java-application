@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final  UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -31,8 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User readById(long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("User", id)));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("User", id)));
     }
 
     @Override
@@ -57,19 +56,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not Found!");
-        }
-        return user;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByEmail(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not Found!");
+            throw new EntityNotFoundException("User with user name " + username + "not found!");
         }
         return user;
     }

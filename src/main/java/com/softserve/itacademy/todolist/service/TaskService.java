@@ -10,6 +10,5 @@ public interface TaskService {
     Task update(Task task);
     void delete(long id);
     List<Task> getAll();
-
     List<Task> getByTodoId(long todoId);
 }

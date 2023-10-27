@@ -7,13 +7,18 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ToDoRepository extends JpaRepository<ToDo, Long> {
-    @Query(value = "select * " +
-                   "from todos\n" +
-                   "    where owner_id = :userId\n" +
-                   "union\n" +
-                   "select * " +
-                   "from todos t inner join todo_collaborator tc\n" +
-                   "    on t.id = tc.todo_id and tc." +
-                   "collaborator_id = :userId;", nativeQuery = true)
+
+    @Query(value =
+            """
+                SELECT t.*
+                FROM todos t
+                WHERE t.owner_id = :userId
+                UNION
+                SELECT t.*
+                FROM todos t
+                INNER JOIN todo_collaborator tc ON t.id = tc.todo_id
+                WHERE tc.collaborator_id = :userId
+            """,
+            nativeQuery = true)
     List<ToDo> getByUserId(long userId);
 }

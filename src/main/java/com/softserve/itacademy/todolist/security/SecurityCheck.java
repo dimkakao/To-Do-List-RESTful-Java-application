@@ -17,15 +17,16 @@ public class SecurityCheck {
     @Autowired
     private ToDoService toDoService;
 
-    public boolean isOwner(long id) {
+    public boolean isOwner(long todoId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean result = false;
         if (authentication != null && authentication.isAuthenticated()) {
             User userDetails = (User) authentication.getPrincipal();
             long userId = userDetails.getId();
-            ToDo todo = toDoService.readById(id);
+            ToDo todo = toDoService.readById(todoId);
             result = todo != null && todo.getOwner().getId() == userId;
         }
+        System.out.println("Is owner --- " +  result);
         return result;
     }
 
@@ -37,6 +38,7 @@ public class SecurityCheck {
             ToDo todo = toDoService.readById(todoId);
             result = todo != null && todo.getCollaborators().contains(userDetails);
         }
+        System.out.println("Is collaborator --- " +  result);
         return result;
     }
 
@@ -45,14 +47,14 @@ public class SecurityCheck {
         boolean result = false;
         if (authentication != null && authentication.isAuthenticated()) {
             User userDetails = (User) authentication.getPrincipal();
+            System.out.println("Logged - " + userDetails);
             result = userDetails.getId() == id;
         }
+        System.out.println("Is logged --- " +  result);
         return result;
     }
 
-    public String isAdminOrIsLoggedOwnerOrCollaborator(long userId, long todoId) {
-        return "%s and %s or %s".formatted(isLoggedUser(userId), isOwner(todoId), isCollaborator(todoId));
-//                " (@securityCheck.isLoggedUser(#userId) and" +
-//                "(@securityCheck.isOwner(#todoId) or @securityCheck.isCollaborator(#todoId)))"
+    public boolean isLoggedOwnerOrCollaborator(long userId, long todoId) {
+        return isLoggedUser(userId) && (isOwner(todoId) || isCollaborator(todoId));
     }
 }
