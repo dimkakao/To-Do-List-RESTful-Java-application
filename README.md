@@ -53,7 +53,7 @@ This Java-based RESTful Todo List project is designed to efficiently manage task
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/dimkakao/To-Do-List.-RESTful-Java-application
+    git clone https://github.com/dimkakao/To-Do-List-RESTful-Java-application
     ```
 2. Set up and configure the required dependencies and environment.
 3. Using IntelliJ IDEA, run the main class "ToDoListApplication" of the application.
