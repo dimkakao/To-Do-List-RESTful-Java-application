@@ -15,7 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -46,7 +48,7 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-//    @Pattern(regexp = "[A-Za-z\\d]{6,}",
+    //    @Pattern(regexp = "[A-Za-z\\d]{6,}",
 //            message = "Must be minimum 6 symbols long, using digits and latin letters")
 //    @Pattern(regexp = ".*\\d.*",
 //            message = "Must contain at least one digit")
@@ -117,12 +119,12 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User { " +
-               "id = " + id +
-               ", firstName = '" + firstName + '\'' +
-               ", lastName = '" + lastName + '\'' +
-               ", email = '" + email + '\'' +
-               ", password = '" + password + '\'' +
-               ", role = " + role +
-               " }";
+                "id = " + id +
+                ", firstName = '" + firstName + '\'' +
+                ", lastName = '" + lastName + '\'' +
+                ", email = '" + email + '\'' +
+                ", password = '" + password + '\'' +
+                ", role = " + role +
+                " }";
     }
 }

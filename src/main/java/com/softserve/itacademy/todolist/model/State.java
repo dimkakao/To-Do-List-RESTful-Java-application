@@ -11,8 +11,11 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
-@Entity @Table(name = "states")
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "states")
 public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +44,8 @@ public class State {
     @Override
     public String toString() {
         return "State { " +
-               "id = " + id +
-               ", name = '" + name + '\'' +
-               " }";
+                "id = " + id +
+                ", name = '" + name + '\'' +
+                " }";
     }
 }

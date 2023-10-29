@@ -1,4 +1,4 @@
-package com.softserve.itacademy.todolist.dto;
+package com.softserve.itacademy.todolist.dto.requestsAndResponce;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;

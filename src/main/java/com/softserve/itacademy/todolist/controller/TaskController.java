@@ -1,7 +1,7 @@
 package com.softserve.itacademy.todolist.controller;
 
-import com.softserve.itacademy.todolist.dto.TaskRequest;
-import com.softserve.itacademy.todolist.dto.TaskResponse;
+import com.softserve.itacademy.todolist.dto.requestsAndResponce.TaskRequest;
+import com.softserve.itacademy.todolist.dto.requestsAndResponce.TaskResponse;
 import com.softserve.itacademy.todolist.model.Priority;
 import com.softserve.itacademy.todolist.model.Task;
 import com.softserve.itacademy.todolist.model.ToDo;
@@ -90,7 +90,7 @@ public class TaskController {
     private void ensureTodoContainsTask(Task task, long todoId) {
         ToDo toDo = toDoService.readById(todoId);
         if (!toDo.getTasks().contains(task)) {
-            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Task", task.getId()) + " in Todo " + todoId );
+            throw new EntityNotFoundException(EntityNotFoundMessage.notfoundMessage("Task", task.getId()) + " in Todo " + todoId);
         }
     }
 }

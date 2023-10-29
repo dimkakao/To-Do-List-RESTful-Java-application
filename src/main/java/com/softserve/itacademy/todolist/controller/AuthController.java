@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
-public class Auth {
+public class AuthController {
 
     private AuthenticationManager authenticationManager;
     private JwtUtils jwtUtils;

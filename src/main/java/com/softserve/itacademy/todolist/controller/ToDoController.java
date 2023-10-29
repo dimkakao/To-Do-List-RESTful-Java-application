@@ -1,6 +1,8 @@
 package com.softserve.itacademy.todolist.controller;
 
 import com.softserve.itacademy.todolist.dto.*;
+import com.softserve.itacademy.todolist.dto.requestsAndResponce.ToDoResponse;
+import com.softserve.itacademy.todolist.dto.requestsAndResponce.UserResponse;
 import com.softserve.itacademy.todolist.exception.EntityAlreadyExistException;
 import com.softserve.itacademy.todolist.model.ToDo;
 import com.softserve.itacademy.todolist.model.User;

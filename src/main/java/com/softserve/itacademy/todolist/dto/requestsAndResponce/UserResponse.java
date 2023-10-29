@@ -1,11 +1,9 @@
-package com.softserve.itacademy.todolist.dto;
+package com.softserve.itacademy.todolist.dto.requestsAndResponce;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.softserve.itacademy.todolist.model.User;
 import lombok.Value;
-import org.springframework.data.mapping.model.PropertyNameFieldNamingStrategy;
 
 @Value
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)

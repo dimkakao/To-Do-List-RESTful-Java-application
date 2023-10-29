@@ -52,6 +52,4 @@ public class GlobalExceptionHandler {
         errors.put(ERROR, ex.getMessage());
         return ResponseEntity.badRequest().body(errors);
     }
-
-    // todo: add more handlers
 }

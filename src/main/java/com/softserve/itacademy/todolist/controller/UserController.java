@@ -1,18 +1,14 @@
 package com.softserve.itacademy.todolist.controller;
 
 import com.softserve.itacademy.todolist.dto.UserDto;
-import com.softserve.itacademy.todolist.dto.UserResponse;
+import com.softserve.itacademy.todolist.dto.requestsAndResponce.UserResponse;
 import com.softserve.itacademy.todolist.dto.UserTransformer;
 import com.softserve.itacademy.todolist.exception.EntityAlreadyExistException;
 import com.softserve.itacademy.todolist.model.User;
 import com.softserve.itacademy.todolist.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;

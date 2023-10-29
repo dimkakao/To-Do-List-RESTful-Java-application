@@ -12,12 +12,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
-@Entity @Table(name = "todos")
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "todos")
 public class ToDo {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @GeneratedValue(generator = "sequence_generator")
     @GenericGenerator(
             name = "sequence-generator",
@@ -66,9 +67,9 @@ public class ToDo {
     @Override
     public String toString() {
         return "ToDo { " +
-               "id = " + id +
-               ", title = '" + title + '\'' +
-               ", createdAt = " + createdAt +
-               " }";
+                "id = " + id +
+                ", title = '" + title + '\'' +
+                ", createdAt = " + createdAt +
+                " }";
     }
 }

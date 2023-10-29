@@ -9,12 +9,13 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "tasks")
 public class Task {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @GeneratedValue(generator = "sequence_generator")
     @GenericGenerator(
             name = "sequence-generator",
@@ -58,11 +59,11 @@ public class Task {
     @Override
     public String toString() {
         return "Task { " +
-               "id = " + id +
-               ", name = '" + name + '\'' +
-               ", priority = " + priority +
-               ", todo = " + todo +
-               ", state = " + state +
-               " }";
+                "id = " + id +
+                ", name = '" + name + '\'' +
+                ", priority = " + priority +
+                ", todo = " + todo +
+                ", state = " + state +
+                " }";
     }
 }
