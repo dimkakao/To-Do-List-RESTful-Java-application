@@ -52,7 +52,6 @@ public class ToDoController {
             throw new EntityAlreadyExistException("Todo with some title already exist.");
         }
         ToDo toDo = new ToDo();
-        System.out.println("Todo id = " + toDo.getId());
         toDo.setTitle(newToDo.getTitle());
         toDo.setCreatedAt(LocalDateTime.now());
         toDo.setOwner(user);

@@ -57,7 +57,7 @@ This Java-based RESTful Todo List project is designed to efficiently manage task
     ```
 2. Set up and configure the required dependencies and environment.
 3. Using IntelliJ IDEA, run the main class "ToDoListApplication" of the application.
-4. After the first launch, change the name of the "schema.sql" file in the main/resources folder.
+4. After the first launch, change the name of the "schema1.sql" file in the main/resources folder.
 ---
 
 ## Usage

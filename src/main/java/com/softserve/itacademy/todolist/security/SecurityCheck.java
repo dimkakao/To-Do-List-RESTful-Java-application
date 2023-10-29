@@ -26,7 +26,6 @@ public class SecurityCheck {
             ToDo todo = toDoService.readById(todoId);
             result = todo != null && todo.getOwner().getId() == userId;
         }
-        System.out.println("Is owner --- " + result);
         return result;
     }
 
@@ -38,7 +37,6 @@ public class SecurityCheck {
             ToDo todo = toDoService.readById(todoId);
             result = todo != null && todo.getCollaborators().contains(userDetails);
         }
-        System.out.println("Is collaborator --- " + result);
         return result;
     }
 
@@ -47,10 +45,8 @@ public class SecurityCheck {
         boolean result = false;
         if (authentication != null && authentication.isAuthenticated()) {
             User userDetails = (User) authentication.getPrincipal();
-            System.out.println("Logged - " + userDetails);
             result = userDetails.getId() == id;
         }
-        System.out.println("Is logged --- " + result);
         return result;
     }
 
