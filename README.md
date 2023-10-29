@@ -1,6 +1,6 @@
 # Java RESTful Todo List Application
 
-This Java-based RESTful Todo List project is designed to efficiently manage tasks and to-do items through a structured API architecture.
+This Java-based RESTful Todo List project is designed to efficiently manage tasks and to-do items through a structured API architecture. It was developed in a team of 2 people.
 
 ---
 
